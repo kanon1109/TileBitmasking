@@ -17,8 +17,6 @@ class TileBitmasking
     public columns:number;
     //存放瓦片的二维列表
     private tileList:any[];
-    //是否是计算4位方向值
-    private is4bit:boolean = true;
     /**
      * 创建地图
      * @param rows      行数
@@ -41,12 +39,12 @@ class TileBitmasking
 	}
 
     /**
-     * 根据方向判断是否有地形
+     * 根据4位方向判断是否有地形
      * @param row       行数
      * @param columns   列数
      * @param dir       方向
      */
-    public hasTerrainByDir(row:number, columns:number, dir:number):boolean
+    public hasTerrainBy4bitDir(row:number, columns:number, dir:number):boolean
     {
         var tile:Tile = this.tileList[row][columns];
         if(!tile) return false;
@@ -116,7 +114,7 @@ class TileBitmasking
         var dirValue:number = 0;
         for(var i:number = 0; i < 4; i++)
         {
-            if(this.hasTerrainByDir(row, columns, i))
+            if(this.hasTerrainBy4bitDir(row, columns, i))
                dirValue += Math.pow(2, i);
         }
         return dirValue;

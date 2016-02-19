@@ -10,8 +10,6 @@ var TileBitmasking = (function () {
      * @param columns   列数
      */
     function TileBitmasking(rows, columns) {
-        //是否是计算4位方向值
-        this.is4bit = true;
         this.rows = rows;
         this.columns = columns;
         this.tileList = [];
@@ -25,12 +23,12 @@ var TileBitmasking = (function () {
     }
     var d = __define,c=TileBitmasking,p=c.prototype;
     /**
-     * 根据方向判断是否有地形
+     * 根据4位方向判断是否有地形
      * @param row       行数
      * @param columns   列数
      * @param dir       方向
      */
-    p.hasTerrainByDir = function (row, columns, dir) {
+    p.hasTerrainBy4bitDir = function (row, columns, dir) {
         var tile = this.tileList[row][columns];
         if (!tile)
             return false;
@@ -91,7 +89,7 @@ var TileBitmasking = (function () {
     p.math4BitDirValues = function (row, columns) {
         var dirValue = 0;
         for (var i = 0; i < 4; i++) {
-            if (this.hasTerrainByDir(row, columns, i))
+            if (this.hasTerrainBy4bitDir(row, columns, i))
                 dirValue += Math.pow(2, i);
         }
         return dirValue;

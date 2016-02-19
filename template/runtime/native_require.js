@@ -11,6 +11,7 @@ var game_file_list = [
 	"bin-debug/LoadingUI.js",
 	"bin-debug/Main.js",
 	"bin-debug/TileBitmasking.js",
+	"bin-debug/TileBitmaskingTest.js",
 	"bin-debug/vo/Tile.js",
 	//----auto game_file_list end----
 ];
