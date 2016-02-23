@@ -81,6 +81,50 @@ class TileBitmasking
     }
 
     /**
+     * 根据8位方向判断是否有地形
+     * @param row       行数
+     * @param columns   列数
+     * @param dir       方向
+     */
+    public hasTerrainBy8bitDir(row:number, columns:number, dir:number):boolean
+    {
+        var tile:Tile = this.tileList[row][columns];
+        if(!tile) return false;
+        switch (dir)
+        {
+            case TileBitmasking.UP_8BIT:
+                tile = this.tileList[row - 1][columns];
+                break;
+            case TileBitmasking.DOWN_8BIT:
+                tile = this.tileList[row + 1][columns];
+                break;
+            case TileBitmasking.LEFT_8BIT:
+                tile = this.tileList[row][columns - 1];
+                break;
+            case TileBitmasking.RIGHT_8BIT:
+                tile = this.tileList[row][columns + 1];
+                break;
+            case TileBitmasking.LEFT_UP_8BIT:
+                tile = this.tileList[row - 1][columns - 1];
+                break;
+            case TileBitmasking.LEFT_DOWN_8BIT:
+                tile = this.tileList[row + 1][columns - 1];
+                break;
+            case TileBitmasking.RIGHT_UP_8BIT:
+                tile = this.tileList[row - 1][columns + 1];
+                break;
+            case TileBitmasking.RIGHT_DOWN_8BIT:
+                tile = this.tileList[row + 1][columns + 1];
+                break;
+            default:
+                return false;
+                break;
+        }
+        if(!tile) return false;
+        return tile.isTerrain;
+    }
+
+    /**
      * 根据位置获取格子
      * @param posX          x位置
      * @param posY          y位置
@@ -98,7 +142,6 @@ class TileBitmasking
         return tile;
     }
 
-
     /**
      * 4位 方向值
      * UP_4BIT    = 2^0 = 1
@@ -106,6 +149,21 @@ class TileBitmasking
      * RIGHT_4BIT = 2^2 = 4
      * DOWN_4BIT  = 2^3 = 8
      *
+     * @param row       行
+     * @param columns   列
+     */
+    public math4BitDirValues(row:number, columns:number):number
+    {
+        var dirValue:number = 0;
+        for(var i:number = 0; i < 4; i++)
+        {
+            if(this.hasTerrainBy4bitDir(row, columns, i))
+               dirValue += Math.pow(2, i);
+        }
+        return dirValue;
+    }
+
+    /**
      * 8位 方向值
      * LEFT_UP_8BIT      = 2^0 = 1
      * UP_8BIT           = 2^1 = 2
@@ -119,13 +177,13 @@ class TileBitmasking
      * @param row       行
      * @param columns   列
      */
-    public math4BitDirValues(row:number, columns:number):number
+    public math8BitDirValues(row:number, columns:number):number
     {
         var dirValue:number = 0;
-        for(var i:number = 0; i < 4; i++)
+        for(var i:number = 0; i < 8; i++)
         {
             if(this.hasTerrainBy4bitDir(row, columns, i))
-               dirValue += Math.pow(2, i);
+                dirValue += Math.pow(2, i);
         }
         return dirValue;
     }
