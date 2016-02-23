@@ -6,10 +6,20 @@
 class TileBitmasking 
 {
     //4位方向码
-    public static UP:number = 0;
-    public static LEFT:number = 1;
-    public static RIGHT:number = 2;
-    public static DOWN:number = 3;
+    public static UP_4BIT:number = 0;
+    public static LEFT_4BIT:number = 1;
+    public static RIGHT_4BIT:number = 2;
+    public static DOWN_4BIT:number = 3;
+
+    //8位方向码
+    public static LEFT_UP_8BIT:number = 0;
+    public static UP_8BIT:number = 1;
+    public static RIGHT_UP_8BIT:number = 2;
+    public static LEFT_8BIT:number = 3;
+    public static RIGHT_8BIT:number = 4;
+    public static LEFT_DOWN_8BIT:number = 5;
+    public static DOWN_8BIT:number = 6;
+    public static RIGHT_DOWN_8BIT:number = 7;
 
     //行数
     public rows:number;
@@ -50,16 +60,16 @@ class TileBitmasking
         if(!tile) return false;
         switch (dir)
         {
-            case TileBitmasking.UP:
+            case TileBitmasking.UP_4BIT:
                 tile = this.tileList[row - 1][columns];
                 break;
-            case TileBitmasking.DOWN:
+            case TileBitmasking.DOWN_4BIT:
                 tile = this.tileList[row + 1][columns];
                 break;
-            case TileBitmasking.LEFT:
+            case TileBitmasking.LEFT_4BIT:
                 tile = this.tileList[row][columns - 1];
                 break;
-            case TileBitmasking.RIGHT:
+            case TileBitmasking.RIGHT_4BIT:
                 tile = this.tileList[row][columns + 1];
                 break;
             default:
@@ -91,20 +101,20 @@ class TileBitmasking
 
     /**
      * 4位 方向值
-     * UP    = 2^0 = 1
-     * LEFT  = 2^1 = 2
-     * RIGHT = 2^2 = 4
-     * DOWN  = 2^3 = 8
+     * UP_4BIT    = 2^0 = 1
+     * LEFT_4BIT  = 2^1 = 2
+     * RIGHT_4BIT = 2^2 = 4
+     * DOWN_4BIT  = 2^3 = 8
      *
      * 8位 方向值
-     * LEFT_UP      = 2^0 = 1
-     * UP           = 2^1 = 2
-     * RIGHT_UP     = 2^2 = 4
-     * LEFT         = 2^3 = 8
-     * RIGHT        = 2^4 = 16
-     * LEFT_DOWN    = 2^5 = 32
-     * DOWN         = 2^6 = 64
-     * RIGHT_DOWN   = 2^7 = 128
+     * LEFT_UP_8BIT      = 2^0 = 1
+     * UP_8BIT           = 2^1 = 2
+     * RIGHT_UP_8BIT     = 2^2 = 4
+     * LEFT_8BIT         = 2^3 = 8
+     * RIGHT_8BIT        = 2^4 = 16
+     * LEFT_DOWN_8BIT    = 2^5 = 32
+     * DOWN_8BIT         = 2^6 = 64
+     * RIGHT_DOWN_8BIT   = 2^7 = 128
      *
      * @param row       行
      * @param columns   列
