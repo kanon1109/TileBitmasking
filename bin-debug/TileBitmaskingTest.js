@@ -1,7 +1,6 @@
 /**
  * 4位码测试文件
  * @author kanon
- *
  */
 var TileBitmaskingTest = (function (_super) {
     __extends(TileBitmaskingTest, _super);
@@ -16,7 +15,8 @@ var TileBitmaskingTest = (function (_super) {
     var d = __define,c=TileBitmaskingTest,p=c.prototype;
     p.onAddToStage = function (event) {
         this.init();
-        this.initTerrainTextures();
+        this.init4BitTerrainTextures();
+        this.init8BitTerrainTextures();
         this.initTile();
     };
     /**
@@ -51,11 +51,21 @@ var TileBitmaskingTest = (function (_super) {
     /**
      * 初始化地形纹理列表
      */
-    p.initTerrainTextures = function () {
-        this.terrainTextureAry = [];
+    p.init4BitTerrainTextures = function () {
+        this.terrain4BitTextureAry = [];
         for (var i = 0; i < 16; i++) {
             var texture = RES.getRes("terrain" + i);
-            this.terrainTextureAry.push(texture);
+            this.terrain4BitTextureAry.push(texture);
+        }
+    };
+    /**
+     * 初始化地形纹理列表
+     */
+    p.init8BitTerrainTextures = function () {
+        this.terrain8BitTextureAry = [];
+        for (var i = 1; i <= 48; i++) {
+            var texture = RES.getRes("terrain8bit" + i);
+            this.terrain8BitTextureAry.push(texture);
         }
     };
     p.touchBeginHandler = function (event) {
@@ -66,7 +76,8 @@ var TileBitmaskingTest = (function (_super) {
     };
     p.touchEndHandler = function (event) {
         this.isTouched = false;
-        this.createDynamicTile();
+        this.createDynamicTile(false);
+        //this.createDynamicTile(true);
     };
     p.touchMoveHandler = function (event) {
         if (this.isTouched)
@@ -103,17 +114,27 @@ var TileBitmaskingTest = (function (_super) {
     /**
      * 创建动态地形
      */
-    p.createDynamicTile = function () {
+    p.createDynamicTile = function (is4Bit) {
         var count = this.terrainAry.length;
         for (var i = 0; i < count; ++i) {
             var tile = this.terrainAry[i];
             var tileBmp = tile.userData;
             if (tileBmp.parent)
                 tileBmp.parent.removeChild(tileBmp);
-            var index = this.tileBitmasking.math4BitDirValues(tile.row, tile.column);
-            var terrainTexture = this.terrainTextureAry[index];
+            var index;
+            var terrainTexture;
+            if (is4Bit) {
+                index = this.tileBitmasking.math4BitDirValues(tile.row, tile.column);
+                terrainTexture = this.terrain4BitTextureAry[index];
+            }
+            else {
+                index = this.tileBitmasking.math8BitDirValues(tile.row, tile.column);
+                terrainTexture = this.terrain8BitTextureAry[index];
+            }
             tileBmp = new egret.Bitmap();
             tileBmp.texture = terrainTexture;
+            tileBmp.width = this.tileWidth;
+            tileBmp.height = this.tileHeight;
             tileBmp.x = tile.column * this.tileWidth;
             tileBmp.y = tile.row * this.tileHeight;
             this.addChild(tileBmp);

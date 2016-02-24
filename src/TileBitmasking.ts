@@ -27,6 +27,9 @@ class TileBitmasking
     public columns:number;
     //存放瓦片的二维列表
     private tileList:any[];
+    //8为方向码表
+    private dirValue8BitObj = {};
+
     /**
      * 创建地图
      * @param rows      行数
@@ -46,7 +49,62 @@ class TileBitmasking
                 this.tileList[i][j] = tile;
             }
         }
+        this.init8BitDirValue();
 	}
+
+    /**
+     * 初始化8位方向码
+     */
+    private init8BitDirValue():void
+    {
+        this.dirValue8BitObj[0] = 47;
+        this.dirValue8BitObj[2] = 1;
+        this.dirValue8BitObj[8] = 2;
+        this.dirValue8BitObj[10] = 3;
+        this.dirValue8BitObj[11] = 4;
+        this.dirValue8BitObj[16] = 5;
+        this.dirValue8BitObj[18] = 6;
+        this.dirValue8BitObj[22] = 7;
+        this.dirValue8BitObj[24] = 8;
+        this.dirValue8BitObj[26] = 9;
+        this.dirValue8BitObj[27] = 10;
+        this.dirValue8BitObj[30] = 11;
+        this.dirValue8BitObj[31] = 12;
+        this.dirValue8BitObj[64] = 13;
+        this.dirValue8BitObj[66] = 14;
+        this.dirValue8BitObj[72] = 15;
+        this.dirValue8BitObj[74] = 16;
+        this.dirValue8BitObj[75] = 17;
+        this.dirValue8BitObj[80] = 18;
+        this.dirValue8BitObj[82] = 19;
+        this.dirValue8BitObj[86] = 20;
+        this.dirValue8BitObj[88] = 21;
+        this.dirValue8BitObj[90] = 22;
+        this.dirValue8BitObj[91] = 23;
+        this.dirValue8BitObj[94] = 24;
+        this.dirValue8BitObj[95] = 25;
+        this.dirValue8BitObj[104] = 26;
+        this.dirValue8BitObj[106] = 27;
+        this.dirValue8BitObj[107] = 28;
+        this.dirValue8BitObj[120] = 29;
+        this.dirValue8BitObj[122] = 30;
+        this.dirValue8BitObj[123] = 31;
+        this.dirValue8BitObj[126] = 32;
+        this.dirValue8BitObj[127] = 33;
+        this.dirValue8BitObj[208] = 34;
+        this.dirValue8BitObj[210] = 35;
+        this.dirValue8BitObj[214] = 36;
+        this.dirValue8BitObj[216] = 37;
+        this.dirValue8BitObj[218] = 38;
+        this.dirValue8BitObj[219] = 39;
+        this.dirValue8BitObj[222] = 40;
+        this.dirValue8BitObj[223] = 41;
+        this.dirValue8BitObj[248] = 42;
+        this.dirValue8BitObj[250] = 43;
+        this.dirValue8BitObj[251] = 44;
+        this.dirValue8BitObj[254] = 45;
+        this.dirValue8BitObj[255] = 46;
+    }
 
     /**
      * 根据4位方向判断是否有地形
@@ -54,23 +112,27 @@ class TileBitmasking
      * @param columns   列数
      * @param dir       方向
      */
-    public hasTerrainBy4bitDir(row:number, columns:number, dir:number):boolean
+    public hasTerrainBy4bitDir(row:number, column:number, dir:number):boolean
     {
-        var tile:Tile = this.tileList[row][columns];
+        var tile:Tile = this.tileList[row][column];
         if(!tile) return false;
         switch (dir)
         {
             case TileBitmasking.UP_4BIT:
-                tile = this.tileList[row - 1][columns];
+                if(row - 1 < 0) break;
+                tile = this.tileList[row - 1][column];
                 break;
             case TileBitmasking.DOWN_4BIT:
-                tile = this.tileList[row + 1][columns];
+                if(row + 1 > this.rows) break;
+                tile = this.tileList[row + 1][column];
                 break;
             case TileBitmasking.LEFT_4BIT:
-                tile = this.tileList[row][columns - 1];
+                if(column - 1 < 0) break;
+                tile = this.tileList[row][column - 1];
                 break;
             case TileBitmasking.RIGHT_4BIT:
-                tile = this.tileList[row][columns + 1];
+                if(column + 1 > this.columns) break;
+                tile = this.tileList[row][column + 1];
                 break;
             default:
                 return false;
@@ -83,44 +145,51 @@ class TileBitmasking
     /**
      * 根据8位方向判断是否有地形
      * @param row       行数
-     * @param columns   列数
+     * @param column   列数
      * @param dir       方向
      */
-    public hasTerrainBy8bitDir(row:number, columns:number, dir:number):boolean
+    public hasTerrainBy8bitDir(row:number, column:number, dir:number):boolean
     {
-        var tile:Tile = this.tileList[row][columns];
+        var tile:Tile = this.tileList[row][column];
         if(!tile) return false;
         switch (dir)
         {
             case TileBitmasking.UP_8BIT:
-                tile = this.tileList[row - 1][columns];
+                if(row - 1 < 0) break;
+                tile = this.tileList[row - 1][column];
                 break;
             case TileBitmasking.DOWN_8BIT:
-                tile = this.tileList[row + 1][columns];
+                if(row + 1 > this.rows) break;
+                tile = this.tileList[row + 1][column];
                 break;
             case TileBitmasking.LEFT_8BIT:
-                tile = this.tileList[row][columns - 1];
+                if(column - 1 < 0) break;
+                tile = this.tileList[row][column - 1];
                 break;
             case TileBitmasking.RIGHT_8BIT:
-                tile = this.tileList[row][columns + 1];
+                if(column + 1 > this.columns) break;
+                tile = this.tileList[row][column + 1];
                 break;
             case TileBitmasking.LEFT_UP_8BIT:
-                tile = this.tileList[row - 1][columns - 1];
+                if(row - 1 < 0 || column - 1 < 0) break;
+                tile = this.tileList[row - 1][column - 1];
                 break;
             case TileBitmasking.LEFT_DOWN_8BIT:
-                tile = this.tileList[row + 1][columns - 1];
+                if(row + 1 > this.rows || column - 1 < 0) break;
+                tile = this.tileList[row + 1][column - 1];
                 break;
             case TileBitmasking.RIGHT_UP_8BIT:
-                tile = this.tileList[row - 1][columns + 1];
+                if(row - 1 < 0 || column + 1 > this.columns) break;
+                tile = this.tileList[row - 1][column + 1];
                 break;
             case TileBitmasking.RIGHT_DOWN_8BIT:
-                tile = this.tileList[row + 1][columns + 1];
+                if(row + 1 > this.rows || column + 1 > this.columns) break;
+                tile = this.tileList[row + 1][column + 1];
                 break;
             default:
                 return false;
                 break;
         }
-        if(!tile) return false;
         return tile.isTerrain;
     }
 
@@ -158,7 +227,8 @@ class TileBitmasking
         for(var i:number = 0; i < 4; i++)
         {
             if(this.hasTerrainBy4bitDir(row, columns, i))
-               dirValue += Math.pow(2, i);
+                dirValue += Math.pow(2, i);
+
         }
         return dirValue;
     }
@@ -179,12 +249,28 @@ class TileBitmasking
      */
     public math8BitDirValues(row:number, columns:number):number
     {
-        var dirValue:number = 0;
-        for(var i:number = 0; i < 8; i++)
-        {
-            if(this.hasTerrainBy4bitDir(row, columns, i))
-                dirValue += Math.pow(2, i);
-        }
+        var up:boolean = this.hasTerrainBy8bitDir(row, columns, TileBitmasking.UP_8BIT);
+        var left:boolean = this.hasTerrainBy8bitDir(row, columns, TileBitmasking.LEFT_8BIT);
+        var right:boolean = this.hasTerrainBy8bitDir(row, columns, TileBitmasking.RIGHT_8BIT);
+        var down:boolean = this.hasTerrainBy8bitDir(row, columns, TileBitmasking.DOWN_8BIT);
+        var upLeft:boolean = this.hasTerrainBy8bitDir(row, columns, TileBitmasking.LEFT_UP_8BIT) && up && left;
+        var upRight:boolean = this.hasTerrainBy8bitDir(row, columns, TileBitmasking.RIGHT_UP_8BIT) && up && right;
+        var downLeft:boolean = this.hasTerrainBy8bitDir(row, columns, TileBitmasking.LEFT_DOWN_8BIT) && down && left;
+        var downRight:boolean = this.hasTerrainBy8bitDir(row, columns, TileBitmasking.RIGHT_DOWN_8BIT) && down && right;
+
+        var upVal:number = up ? 1 : 0;
+        var leftVal:number = left ? 1 : 0;
+        var rightVal:number = right ? 1 : 0;
+        var downVal:number = down ? 1 : 0;
+        var upLeftVal:number = upLeft ? 1 : 0;
+        var upRightVal:number = upRight ? 1 : 0;
+        var downLeftVal:number = downLeft ? 1 : 0;
+        var downRightVal:number = downRight ? 1 : 0;
+
+        var index:number = upLeftVal + 2*upVal +
+                              4*upRightVal + 8*leftVal + 16*rightVal +
+                              32*downLeftVal + 64*downVal + 128*downRightVal;
+        var dirValue:number = this.dirValue8BitObj[index];
         return dirValue;
     }
 }

@@ -21,7 +21,9 @@ class TileBitmaskingTest  extends egret.DisplayObjectContainer
 	//存放有地形瓦片的字典
 	private terrainAry:any[];
 	//地形纹理列表
-	private terrainTextureAry:any[];
+    private terrain4BitTextureAry:any[];
+    //8位码地形纹理列表
+    private terrain8BitTextureAry:any[];
 	public constructor()
 	{
         super();
@@ -32,7 +34,8 @@ class TileBitmaskingTest  extends egret.DisplayObjectContainer
     private onAddToStage(event:egret.Event)
     {
         this.init();
-        this.initTerrainTextures();
+        this.init4BitTerrainTextures();
+        this.init8BitTerrainTextures();
         this.initTile();
     }
 
@@ -74,13 +77,26 @@ class TileBitmaskingTest  extends egret.DisplayObjectContainer
     /**
      * 初始化地形纹理列表
      */
-    private initTerrainTextures():void
+    private init4BitTerrainTextures():void
     {
-        this.terrainTextureAry = [];
+        this.terrain4BitTextureAry = [];
         for(var i:number = 0; i < 16; i++)
         {
             var texture:egret.Texture = RES.getRes("terrain" + i);
-            this.terrainTextureAry.push(texture);
+            this.terrain4BitTextureAry.push(texture);
+        }
+    }
+
+    /**
+     * 初始化地形纹理列表
+     */
+    private init8BitTerrainTextures():void
+    {
+        this.terrain8BitTextureAry = [];
+        for(var i:number = 1; i <= 48; i++)
+        {
+            var texture:egret.Texture = RES.getRes("terrain8bit" + i);
+            this.terrain8BitTextureAry.push(texture);
         }
     }
 
@@ -98,7 +114,8 @@ class TileBitmaskingTest  extends egret.DisplayObjectContainer
     private touchEndHandler(event:egret.TouchEvent):void
     {
         this.isTouched = false;
-        this.createDynamicTile();
+        this.createDynamicTile(false);
+        //this.createDynamicTile(true);
     }
 
     private touchMoveHandler(event:egret.TouchEvent):void
@@ -116,9 +133,9 @@ class TileBitmaskingTest  extends egret.DisplayObjectContainer
     private createTileBmpByMousePos(mouseX:number, mouseY:number, texture:egret.Texture):void
     {
         var tile:Tile = this.tileBitmasking.getTileByPos(mouseX,
-            mouseY,
-            this.tileWidth,
-            this.tileHeight);
+                                                         mouseY,
+                                                         this.tileWidth,
+                                                         this.tileHeight);
         var tileBmp:egret.Bitmap;
         if(!tile.isTerrain && !this.isErase)
         {
@@ -146,7 +163,7 @@ class TileBitmaskingTest  extends egret.DisplayObjectContainer
     /**
      * 创建动态地形
      */
-    private createDynamicTile():void
+    private createDynamicTile(is4Bit:boolean):void
     {
         var count:number = this.terrainAry.length;
         for(var i:number = 0; i < count; ++i)
@@ -155,10 +172,22 @@ class TileBitmaskingTest  extends egret.DisplayObjectContainer
             var tileBmp:egret.Bitmap = tile.userData as egret.Bitmap;
             if(tileBmp.parent)
                 tileBmp.parent.removeChild(tileBmp);
-            var index:number = this.tileBitmasking.math4BitDirValues(tile.row, tile.column);
-            var terrainTexture:egret.Texture = this.terrainTextureAry[index];
+            var index:number;
+            var terrainTexture:egret.Texture;
+            if(is4Bit)
+            {
+                index = this.tileBitmasking.math4BitDirValues(tile.row, tile.column);
+                terrainTexture = this.terrain4BitTextureAry[index];
+            }
+            else
+            {
+                index = this.tileBitmasking.math8BitDirValues(tile.row, tile.column);
+                terrainTexture = this.terrain8BitTextureAry[index];
+            }
             tileBmp = new egret.Bitmap();
             tileBmp.texture = terrainTexture;
+            tileBmp.width = this.tileWidth;
+            tileBmp.height = this.tileHeight;
             tileBmp.x = tile.column * this.tileWidth;
             tileBmp.y = tile.row * this.tileHeight;
             this.addChild(tileBmp);
